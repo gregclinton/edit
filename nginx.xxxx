@@ -1,5 +1,5 @@
 # sudo apt install -y nginx
-# sudo nginx -c ~/edit/nginx.conf
+# sudo nginx -c ~/peeps/nginx.conf
 # sudo nginx -s reload
 # sudo nginx -s stop
 # chmod o+x /home/greg
@@ -20,7 +20,7 @@ http {
         ssl_ciphers HIGH:!aNULL:!MD5;
         ssl_prefer_server_ciphers on;
 
-        root /home/greg/edit;
+        root /home/greg/peeps;
 
         location / {
             try_files $uri $uri/ /index.html;
@@ -35,6 +35,26 @@ http {
             proxy_pass https://api.openai.com/;
             proxy_set_header Authorization "Bearer xxxx";
             client_max_body_size 500M;
-       }
+        }
+
+        location /anthropic/ {
+            proxy_ssl_server_name on;
+            proxy_pass https://api.anthropic.com/;
+            proxy_set_header x-api-key "xxxx";
+        }
+
+        location /gemini/ {
+            proxy_ssl_server_name on;
+            proxy_pass https://generativelanguage.googleapis.com/;
+            if ($is_args = "") {
+                rewrite ^(.*)$ $1?key=xxxx last;
+            }
+        }
+
+        location /mistral/ {
+            proxy_ssl_server_name on;
+            proxy_pass https://api.mistral.ai/;
+            proxy_set_header Authorization "Bearer xxxx";
+        }
     }
 }
