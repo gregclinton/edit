@@ -43,19 +43,16 @@ chat = {
 
         msgs.unshift({ role: 'system', content: 'You are a helpful assistant.' });
 
-        await fetch('/openai/v1/chat/completions', {
+        await fetch('/editor', {
             method: 'POST',
             headers:  headers,
             body: JSON.stringify({
                 messages: msgs,
-                model: 'gpt-4o-mini',
-                temperature: 0,
-                response_format: { type: 'text' }
             })
         })
         .then(response => response.json())
         .then(o => {
-            response = o.choices[0].message.content;
+            response = o.message;
             chat.messages.push(response);
             post(marked.parse(response));
             chat.waiting = false;

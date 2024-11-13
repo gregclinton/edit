@@ -20,7 +20,7 @@ http {
         ssl_ciphers HIGH:!aNULL:!MD5;
         ssl_prefer_server_ciphers on;
 
-        root /home/greg/peeps;
+        root /home/greg/edit;
 
         location / {
             try_files $uri $uri/ /index.html;
@@ -37,24 +37,8 @@ http {
             client_max_body_size 500M;
         }
 
-        location /anthropic/ {
-            proxy_ssl_server_name on;
-            proxy_pass https://api.anthropic.com/;
-            proxy_set_header x-api-key "xxxx";
-        }
-
-        location /gemini/ {
-            proxy_ssl_server_name on;
-            proxy_pass https://generativelanguage.googleapis.com/;
-            if ($is_args = "") {
-                rewrite ^(.*)$ $1?key=xxxx last;
-            }
-        }
-
-        location /mistral/ {
-            proxy_ssl_server_name on;
-            proxy_pass https://api.mistral.ai/;
-            proxy_set_header Authorization "Bearer xxxx";
+        location /editor/ {
+            proxy_pass http://127.0.0.1:8000;
         }
     }
 }
