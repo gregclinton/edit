@@ -29,11 +29,11 @@ import time
 
 app = FastAPI()
 
-@app.get("/")
+@app.get('/')
 async def read_root():
-    get_stream = lambda messages: graph.stream(messages, {"configurable": {"thread_id": "4"}}, stream_mode = 'values')
+    get_stream = lambda messages: graph.stream(messages, {'configurable': {'thread_id': '4'}}, stream_mode = 'values')
 
-    for e in get_stream({"messages": [('user', "in file abc in current directory change all e's to xxx")]}):
+    for e in get_stream({'messages': [('user', "in file abc in current directory change all e's to xxx")]}):
         pass
 
     time.sleep(1)
