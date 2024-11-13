@@ -32,12 +32,6 @@ body, html
     margin-bottom: 15px;
 }
 
-#chat .post .settings
-{
-    color: gray;
-    margin-left: 15px;
-}
-
 #toolbar
 {
     position: fixed;
