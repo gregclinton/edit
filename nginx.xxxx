@@ -1,0 +1,33 @@
+events{}
+
+http {
+    server {
+        listen 443 ssl;
+        server_name greg.com;
+
+        ssl_certificate /etc/ssl/certs/cert.pem;
+        ssl_certificate_key /etc/ssl/private/key.pem;
+
+        ssl_session_cache shared:SSL:1m;
+        ssl_session_timeout  10m;
+        ssl_ciphers HIGH:!aNULL:!MD5;
+        ssl_prefer_server_ciphers on;
+
+        root /home/greg/edit;
+
+        location / {
+            try_files $uri $uri/ /index.html;
+        }
+
+        location ~* \.(js|css)$ {
+            try_files $uri =404;
+        }
+
+        location /openai/ {
+            proxy_ssl_server_name on;
+            proxy_pass https://api.openai.com/;
+            proxy_set_header Authorization "Bearer xxxx";
+            client_max_body_size 500M;
+       }
+    }
+}
