@@ -40,10 +40,7 @@ chat = {
 
         function respond(response) {
             chat.messages.push(response);
-            response = response.replace(/\\/g, '\\\\');  // so markdown won't trample LaTex
-            response = marked.parse(response);
-            post(response);
-            MathJax.typesetPromise();
+            post(marked.parse(response));
             chat.waiting = false;
         }
 
