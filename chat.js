@@ -61,7 +61,7 @@ chat = {
         })
         .then(response => response.json())
         .then(o => {
-            response(o.choices[0].message.content);
+            respond(o.choices[0].message.content);
         });
     },
 
