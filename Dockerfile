@@ -1,5 +1,5 @@
 # docker build -t edit .
-# sudo docker run -v `pwd`:/root -w /root edit:latest python3 --version
+# sudo docker run -v `pwd`:/root -w /root edit:latest uvicorn main:app --reload
 
 FROM ubuntu:24.04
 
@@ -13,3 +13,5 @@ RUN apt update && apt upgrade -y && \
 RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11 
 
 RUN pip install -U langgraph langsmith langchain_openai
+
+RUN pip install fastapi uvicorn
