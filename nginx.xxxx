@@ -1,3 +1,10 @@
+# sudo apt install -y nginx
+# sudo nginx -c ~/edit/nginx.conf
+# sudo nginx -s reload
+# sudo nginx -s stop
+# chmod o+x /home/greg
+# sudo openssl req -x509 -newkey rsa:4096 -keyout /etc/ssl/private/key.pem -out /etc/ssl/certs/cert.pem -days 365 -nodes -subj "/CN=greg.com"
+
 events{}
 
 http {
