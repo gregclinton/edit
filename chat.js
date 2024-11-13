@@ -1,32 +1,11 @@
 chat = {
-    const peeps = {
-        register: (name, instructions) => {
-            const peep = { name: name, instructions: instructions };
-    
-            peeps[name] = peep;
-            return  peep;
-        }
-    }
-
     messages: [],
-    peep: peeps.register('ai', 'You are a helpful assistant.'),
 
     prompt: async prompt => {
         chat.waiting = true;
 
-        {
-            const name = prompt.split(',')[0];
-            const p = peeps[name];
-
-            if (p) {
-                chat.peep = p;
-            }
-        }
-
-        const peep = chat.peep;
-
         function post(text) {
-            const name = document.getElementById('chat').children.length % 2 ? peep.name : 'me';
+            const name = document.getElementById('chat').children.length % 2 ? 'ai' : 'me';
             const title = document.createElement('span');
 
             title.innerHTML = name
@@ -68,12 +47,10 @@ chat = {
             chat.waiting = false;
         }
 
-        const instructions = peep.instructions;
         const headers = { 'Content-Type': 'application/json' };
         const msgs = (chat.messages).map((msg, i) => ({ role: i % 2 ? 'assistant' : 'user', content: msg }));
 
-
-        msgs.unshift({ role: 'system', content: instructions });
+        msgs.unshift({ role: 'system', content: 'You are a helpful assistant.' });
 
         await fetch('/openai/v1/chat/completions', {
             method: 'POST',
@@ -103,38 +80,5 @@ chat = {
                 chat.prompt(prompt);
             }
         })
-    },
-
-    redo: () => {
-        const m = chat.messages;
-
-        if (m.length > 1) {
-            const prompt = m[m.length - 2];
-            const div = document.getElementById('chat');
-
-            div.removeChild(div.lastChild);
-            div.removeChild(div.lastChild);
-            m.pop();
-            m.pop();
-
-            chat.prompt(prompt);
-        }
-    },
-
-    back: () => {
-        const m = chat.messages;
-
-        if (m.length > 1) {
-            const div = document.getElementById('chat');
-
-            div.removeChild(div.lastChild);
-            div.removeChild(div.lastChild);
-            m.pop();
-            m.pop();
-
-            if (m.length > 1) {
-                chat.peep = peeps[div.lastChild.querySelector('.name').innerHTML];
-            }
-        }
     }
 }
