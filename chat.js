@@ -38,12 +38,6 @@ chat = {
 
         chat.messages.push(prompt);
 
-        function respond(response) {
-            chat.messages.push(response);
-            post(marked.parse(response));
-            chat.waiting = false;
-        }
-
         const headers = { 'Content-Type': 'application/json' };
         const msgs = (chat.messages).map((msg, i) => ({ role: i % 2 ? 'assistant' : 'user', content: msg }));
 
@@ -61,7 +55,10 @@ chat = {
         })
         .then(response => response.json())
         .then(o => {
-            respond(o.choices[0].message.content);
+            response = o.choices[0].message.content;
+            chat.messages.push(response);
+            post(marked.parse(response));
+            chat.waiting = false;
         });
     },
 
