@@ -39,9 +39,9 @@ def set_temperature(x):
     return temperature
 
 tools = [cmd, set_model, set_temperature]
-llm = ChatOpenAI(model = model, temperature = temperature).bind_tools(tools)
 
 def chatbot(state: MessagesState):
+    llm = ChatOpenAI(model = model, temperature = temperature).bind_tools(tools)
     return {'messages': llm.invoke(state['messages'])}
 
 builder.add_node('chatbot', chatbot)
