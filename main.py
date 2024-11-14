@@ -34,6 +34,8 @@ def set_temperature(x):
     """
     print(temperature, flush = True)
     graph.update_state(thread, { 'temperature': x })
+    temperature = x
+    return temperature
 
 tools = [cmd, set_model, set_temperature]
 llm = ChatOpenAI(model = model, temperature = temperature).bind_tools(tools)
@@ -86,9 +88,15 @@ async def post_prompt(req: Request):
     for event in get_stream(None):
         res = event['messages'][-1]
 
+    usage = res.response_metadata['token_usage']
+
     return {
         'content': res.content,
         'model': model,
         'temperature': temperature,
-        'tokens': res.response_metadata['token_usage']['total_tokens']
+        'tokens': {
+            'in': usage['prompt_tokens'],
+            'out': usage['completion_tokens'],
+            'all': usage['total_tokens']
+         }
     }

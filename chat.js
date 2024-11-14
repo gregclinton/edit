@@ -23,8 +23,10 @@ const chat = {
 
                 top.append(
                     span(output.model), 
-                    span('temperature ' + output.temperature),
-                    span(output.tokens + ' tokens')
+                    span(output.temperature + '°'),
+                    span(output.tokens.in + ' in'),
+                    span(output.tokens.out + ' out'),
+                    span(output.tokens.all + ' all')
                 );
             }
 
