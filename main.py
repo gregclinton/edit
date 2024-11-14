@@ -2,7 +2,6 @@ from langchain_openai import ChatOpenAI
 from langgraph.graph import StateGraph, MessagesState
 from langgraph.prebuilt import ToolNode, tools_condition
 from langgraph.checkpoint.memory import MemorySaver
-from langchain.schema import SystemMessage, HumanMessage
 import subprocess, time, os
 
 with open(os.path.expanduser('~/keys'), 'r') as file:
