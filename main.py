@@ -11,7 +11,6 @@ with open(os.path.expanduser('~/keys'), 'r') as file:
         os.environ[k] = v
 
 builder = StateGraph(MessagesState)
-graph = None
 
 def cmd(line):
     """run a shell command"""
