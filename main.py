@@ -38,6 +38,11 @@ def set_temperature(x):
 
 tools = [cmd, set_model, set_temperature]
 
+instruction = """
+For rendering mathematical expressions, use LaTex with backslash square brackets, \\[ ... \\] for display-style and \\( ... \\) for inline -- no dollar signs.
+Do not escape the backslashes.
+"""
+
 def chatbot(state: MessagesState):
     llm = ChatOpenAI(model = model, temperature = temperature).bind_tools(tools)
     return {'messages': llm.invoke(state['messages'])}
