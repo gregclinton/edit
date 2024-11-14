@@ -44,7 +44,10 @@ chat = {
         })
         .then(response => response.json())
         .then(o => {
-            post(marked.parse(o.answer));
+            post(marked.parse(o.content));
+            o = o.response_metadata;
+            console.log(o.token_usage.total_tokens);
+            console.log(o.model_name);
             chat.waiting = false;
         });
     },

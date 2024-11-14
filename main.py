@@ -84,6 +84,6 @@ async def post_prompt(req: Request):
 
     answer = '???'
     for event in get_stream(None):
-        answer = event['messages'][-1].content
+        res = event['messages'][-1]
 
-    return { 'answer': answer }
+    return res
