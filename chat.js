@@ -22,7 +22,7 @@ const chat = {
                 };
 
                 top.append(
-                    span(output.model), 
+                    span(output.model),
                     span(output.temperature + '°'),
                     span(output.tokens.in + ' in'),
                     span(output.tokens.out + ' out'),
@@ -38,6 +38,7 @@ const chat = {
             post.classList.add('post');
             document.getElementById('chat').appendChild(post);
             Prism.highlightAll();
+            MathJax.typesetPromise();
 
             post.scrollIntoView({ behavior: 'smooth' });
         }
@@ -91,10 +92,10 @@ const chat = {
         if (div.children.length > 2) {
             div.removeChild(div.lastChild);
             div.removeChild(div.lastChild);
-        } 
+        }
 
         fetch('/editor/messages/last', { method: 'DELETE' });
-    }   
+    }
 };
 
 chat.clear();

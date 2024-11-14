@@ -2,7 +2,7 @@ from langchain_openai import ChatOpenAI
 from langgraph.graph import StateGraph, MessagesState
 from langgraph.prebuilt import ToolNode, tools_condition
 from langgraph.checkpoint.memory import MemorySaver
-from langchain.schema import HumanMessage
+from langchain.schema import HumanMessage, SystemMessage
 import subprocess, os
 
 with open(os.path.expanduser('~/keys'), 'r') as file:
@@ -38,14 +38,13 @@ def set_temperature(x):
 
 tools = [cmd, set_model, set_temperature]
 
-instruction = """
-For rendering mathematical expressions, use LaTex with backslash square brackets, \\[ ... \\] for display-style and \\( ... \\) for inline -- no dollar signs.
-Do not escape the backslashes.
-"""
-
 def chatbot(state: MessagesState):
+    instruction = """
+        For rendering mathematical expressions, use LaTex with backslash square brackets, \\[ ... \\] for display-style and \\( ... \\) for inline -- no dollar signs.
+        Do not escape the backslashes.
+    """
     llm = ChatOpenAI(model = model, temperature = temperature).bind_tools(tools)
-    return {'messages': llm.invoke(state['messages'])}
+    return {'messages': llm.invoke([SystemMessage(content = instruction)] + state['messages'])}
 
 builder = StateGraph(MessagesState)
 builder.add_node('chatbot', chatbot)
