@@ -93,7 +93,8 @@ const chat = {
             div.removeChild(div.lastChild);
         } 
 
-        fetch('/editor/messages', { method: 'DELETE' });
+        fetch('/editor/messages/last', { method: 'DELETE' });
+        fetch('/editor/messages/last', { method: 'DELETE' });
     }   
 };
 
