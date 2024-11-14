@@ -41,20 +41,17 @@ chat = {
         const headers = { 'Content-Type': 'application/json' };
         const msgs = (chat.messages).map((msg, i) => ({ role: i % 2 ? 'assistant' : 'user', content: msg }));
 
-        msgs.unshift({ role: 'system', content: 'You are a helpful assistant.' });
-
-        await fetch('/editor', {
+        await fetch('/editor/prompt', {
             method: 'POST',
             headers:  headers,
             body: JSON.stringify({
-                messages: msgs,
+                prompt: prompt
             })
         })
         .then(response => response.json())
         .then(o => {
-            response = o.message;
-            chat.messages.push(response);
-            post(marked.parse(response));
+            chat.messages.push(o.answer);
+            post(marked.parse(o.answer));
             chat.waiting = false;
         });
     },
