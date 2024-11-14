@@ -35,7 +35,7 @@ async def read_root():
 
 @app.post('/prompt')
 async def post_prompt(req: Request):
-    prompt = await req.json().prompt
+    prompt = (await req.json())['prompt']
     get_stream = lambda messages: graph.stream(messages, {'configurable': {'thread_id': '1'}}, stream_mode = 'values')
 
     for e in get_stream({'messages': [('user', prompt)]}):
