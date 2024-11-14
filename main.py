@@ -12,12 +12,31 @@ with open(os.path.expanduser('~/keys'), 'r') as file:
 builder = StateGraph(MessagesState)
 
 def cmd(line):
-    """run a shell command"""
+    """
+        run a shell command
+    """
     print(line, flush = True)
     return subprocess.run(line, shell = True, capture_output = True, text = True).stdout
 
-tools = [cmd]
-llm = ChatOpenAI(model = 'gpt-4o-mini', temperature = 0).bind_tools(tools)
+model = 'gpt-4o-mini'
+temperature = 0
+
+def set_model(name):
+    """
+        gpt-4o, gpt-4o-mini or claude-3-5-sonnet
+    """
+    print(name, flush = True)
+    model = name
+
+def set_temperature(x):
+    """
+        0 to 1
+    """
+    print(temperature, flush = True)
+    temperature = x
+
+tools = [cmd, set_model, set_temperature]
+llm = ChatOpenAI(model = model, temperature = temperature).bind_tools(tools)
 
 def chatbot(state: MessagesState):
     return {'messages': llm.invoke(state['messages'])}
@@ -47,7 +66,10 @@ async def delete_messages():
 @app.post('/messages')
 async def post_prompt(req: Request):
     prompt = (await req.json())['prompt']
-    get_stream = lambda messages: graph.stream(messages, {'configurable': {'thread_id': str(thread_id)}}, stream_mode = 'values')
+    get_stream = lambda messages: graph.stream(messages, {
+        'configurable': {'thread_id': str(thread_id)},
+        'recursion_limit': 3
+    }, stream_mode = 'values')
 
     for e in get_stream({'messages': [('user', prompt)]}):
         pass
