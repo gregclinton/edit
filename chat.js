@@ -1,8 +1,7 @@
-let model = '';
-let tokens = 0;
+let metadata = {};
 
 chat = {
-    prompt: async prompt => {        
+    prompt: async prompt => {
         chat.waiting = true;
 
         function post(text) {
@@ -24,7 +23,7 @@ chat = {
                     return span;
                 };
 
-                top.append(span(model), span(tokens + ' tokens'));
+                top.append(span(metadata.model_name), span(metadata.token_usage.total_tokens + ' tokens'));
             }
 
             const bottom = document.createElement('div');
@@ -51,8 +50,6 @@ chat = {
         .then(response => response.json())
         .then(o => {
             metadata = o.response_metadata;
-            model = metadata.model_name;
-            tokens = metadata.token_usage.total_tokens;
             post(marked.parse(o.content));
             chat.waiting = false;
         });
