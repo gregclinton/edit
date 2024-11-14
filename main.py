@@ -73,6 +73,15 @@ async def delete_messages():
         'recursion_limit': 10
     }
 
+@app.delete('/messages/last')
+async def delete_last_message():
+    msgs = graph.get_state(thread).values['messages']
+
+    while not isinstance(msgs[-1], HumanMessage):
+        msgs.pop()
+
+    msgs.pop()
+
 @app.post('/messages')
 async def post_prompt(req: Request):
     global thread

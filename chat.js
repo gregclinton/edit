@@ -94,7 +94,6 @@ const chat = {
         } 
 
         fetch('/editor/messages/last', { method: 'DELETE' });
-        fetch('/editor/messages/last', { method: 'DELETE' });
     }   
 };
 
