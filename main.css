@@ -20,6 +20,12 @@ body, html
     font-weight: bold;
 }
 
+#chat .post .settings
+{
+    color: gray;
+    margin-left: 15px;
+}
+
 #chat p:first-of-type /* markdown adds a <p> */
 {
     margin: 0px;

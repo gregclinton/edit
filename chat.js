@@ -1,5 +1,8 @@
+let model = '';
+let tokens = 0;
+
 chat = {
-    prompt: async prompt => {
+    prompt: async prompt => {        
         chat.waiting = true;
 
         function post(text) {
@@ -17,8 +20,11 @@ chat = {
                 const span = text => {
                     const span = document.createElement('span');
                     span.innerHTML = text;
+                    span.classList.add('settings')
                     return span;
                 };
+
+                top.append(span(model), span(tokens + ' tokens'));
             }
 
             const bottom = document.createElement('div');
@@ -44,10 +50,10 @@ chat = {
         })
         .then(response => response.json())
         .then(o => {
+            metadata = o.response_metadata;
+            model = metadata.model_name;
+            tokens = metadata.token_usage.total_tokens;
             post(marked.parse(o.content));
-            o = o.response_metadata;
-            console.log(o.token_usage.total_tokens);
-            console.log(o.model_name);
             chat.waiting = false;
         });
     },
@@ -65,6 +71,6 @@ chat = {
             }
         })
     }
-}
+};
 
 chat.clear();
