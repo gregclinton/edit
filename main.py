@@ -33,10 +33,17 @@ app = FastAPI()
 async def read_root():
     return 'Not found.'
 
-@app.post('/prompt')
+thread_id = 1
+
+@app.delete('/messages')
+async def delete_messages():
+   global thread_id
+   thread_id += 1
+
+@app.post('/messages')
 async def post_prompt(req: Request):
     prompt = (await req.json())['prompt']
-    get_stream = lambda messages: graph.stream(messages, {'configurable': {'thread_id': '1'}}, stream_mode = 'values')
+    get_stream = lambda messages: graph.stream(messages, {'configurable': {'thread_id': str(thread_id)}}, stream_mode = 'values')
 
     for e in get_stream({'messages': [('user', prompt)]}):
         pass

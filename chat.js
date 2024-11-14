@@ -1,6 +1,4 @@
 chat = {
-    messages: [],
-
     prompt: async prompt => {
         chat.waiting = true;
 
@@ -36,21 +34,15 @@ chat = {
 
         post(prompt);
 
-        chat.messages.push(prompt);
-
-        const headers = { 'Content-Type': 'application/json' };
-        const msgs = (chat.messages).map((msg, i) => ({ role: i % 2 ? 'assistant' : 'user', content: msg }));
-
-        await fetch('/editor/prompt', {
+        await fetch('/editor/messages', {
             method: 'POST',
-            headers:  headers,
+            headers:  { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 prompt: prompt
             })
         })
         .then(response => response.json())
         .then(o => {
-            chat.messages.push(o.answer);
             post(marked.parse(o.answer));
             chat.waiting = false;
         });
@@ -58,7 +50,7 @@ chat = {
 
     clear: () => {
         document.getElementById('chat').innerHTML = "";
-        chat.messages = [];
+        fetch('/editor/messages', { method: 'DELETE' });
     },
 
     paste: () => {
