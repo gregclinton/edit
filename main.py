@@ -30,10 +30,10 @@ def set_model(name):
 
 def set_temperature(x):
     """
-        0 to 1
+        floating point number from 0.0 to 1.0
     """
     print(temperature, flush = True)
-    temperature = x
+    graph.update_state(thread, { 'temperature': x })
 
 tools = [cmd, set_model, set_temperature]
 llm = ChatOpenAI(model = model, temperature = temperature).bind_tools(tools)
@@ -57,19 +57,25 @@ async def read_root():
     return 'Not found.'
 
 thread_id = 1
+thread = {
+    'configurable': {'thread_id': str(thread_id)},
+    'recursion_limit': 10
+}
 
 @app.delete('/messages')
 async def delete_messages():
-   global thread_id
-   thread_id += 1
+    global thread, thread_id
+    thread_id += 1
+    thread = {
+        'configurable': {'thread_id': str(thread_id)},
+        'recursion_limit': 10
+    }
 
 @app.post('/messages')
 async def post_prompt(req: Request):
-    prompt = (await req.json())['prompt']
-    get_stream = lambda messages: graph.stream(messages, {
-        'configurable': {'thread_id': str(thread_id)},
-        'recursion_limit': 3
-    }, stream_mode = 'values')
+    global thread
+    prompt = (await req.json())['prompt']    
+    get_stream = lambda messages: graph.stream(messages, thread, stream_mode = 'values')
 
     for e in get_stream({'messages': [('user', prompt)]}):
         pass
