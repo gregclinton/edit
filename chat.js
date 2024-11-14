@@ -1,6 +1,6 @@
 let metadata = {};
 
-chat = {
+const chat = {
     prompt: async prompt => {
         chat.waiting = true;
 
