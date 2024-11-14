@@ -22,7 +22,7 @@ def cmd(line):
 
 def set_model(name):
     """
-        gpt-4o, gpt-4o-mini or claude-3-5-sonnet-latest
+        gpt-4o, gpt-4o-mini or claude-3-5-haiku-20241022
     """
     global model
     print(name, flush = True)
@@ -64,8 +64,8 @@ thread = {
     'recursion_limit': 10
 }
 
-@app.delete('/messages')
-async def delete_messages():
+@app.delete('/thread/current')
+async def delete_thread():
     global thread, thread_id
     thread_id += 1
     thread = {

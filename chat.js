@@ -60,7 +60,7 @@ const chat = {
 
     clear: () => {
         document.getElementById('chat').innerHTML = "";
-        fetch('/editor/messages', { method: 'DELETE' });
+        fetch('/editor/thread/current', { method: 'DELETE' });
     },
 
     paste: () => {
