@@ -3,7 +3,12 @@ from langgraph.graph import StateGraph, MessagesState
 from langgraph.prebuilt import ToolNode, tools_condition
 from langgraph.checkpoint.memory import MemorySaver
 from langchain.schema import SystemMessage, HumanMessage
-import subprocess, time
+import subprocess, time, os
+
+with open(os.path.expanduser('~/keys'), 'r') as file:
+    for line in file.read().splitlines():
+        k, v = line.split('=')
+        os.environ[k] = v
 
 builder = StateGraph(MessagesState)
 graph = None
@@ -17,10 +22,7 @@ tools = [cmd]
 llm = None
 
 def chatbot(state: MessagesState):
-    instruction = SystemMessage("""
-        You are going to help me with my source code. My name is Greg.
-    """)
-    return {'messages': [instruction] + llm.invoke(state['messages'])]}
+    return {'messages': llm.invoke(state['messages'])}
 
 builder.add_node('chatbot', chatbot)
 builder.add_node('tools', ToolNode(tools = tools))
@@ -62,13 +64,13 @@ async def post_prompt(req: Request):
 
 def main():
     global llm
-    import sys, os, uvicorn
+    import sys, uvicorn
 
-    os.environ['OPENAI_API_KEY'] = sys.argv[1]
+#    os.environ['OPENAI_API_KEY'] = sys.argv[1]
 
     llm = ChatOpenAI(model = 'gpt-4o-mini').bind_tools(tools)
 
     uvicorn.run(app, host = '0.0.0.0', port = 8000)
 
 if __name__ == "__main__":
-    main()    
+    main()
