@@ -2,7 +2,7 @@ from langchain_openai import ChatOpenAI
 from langgraph.graph import StateGraph, MessagesState
 from langgraph.prebuilt import ToolNode, tools_condition
 from langgraph.checkpoint.memory import MemorySaver
-import subprocess, time, os
+import subprocess, os
 
 with open(os.path.expanduser('~/keys'), 'r') as file:
     for line in file.read().splitlines():
@@ -76,17 +76,17 @@ async def delete_messages():
 @app.post('/messages')
 async def post_prompt(req: Request):
     global thread
-    prompt = (await req.json())['prompt']    
+    prompt = (await req.json())['prompt']
     get_stream = lambda messages: graph.stream(messages, thread, stream_mode = 'values')
 
     for e in get_stream({'messages': [('user', prompt)]}):
         pass
 
-    time.sleep(1)
-
-    answer = '???'
-    for event in get_stream(None):
-        res = event['messages'][-1]
+    while True:
+        for event in get_stream(None):
+            res = event['messages'][-1]
+        if res.content:
+            break
 
     usage = res.response_metadata['token_usage']
 
