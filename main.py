@@ -86,4 +86,9 @@ async def post_prompt(req: Request):
     for event in get_stream(None):
         res = event['messages'][-1]
 
-    return res
+    return {
+        'content': res.content,
+        'model': model,
+        'temperature': temperature,
+        'tokens': res.response_metadata['token_usage']['total_tokens']
+    }

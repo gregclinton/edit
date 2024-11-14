@@ -1,10 +1,8 @@
-let metadata = {};
-
 const chat = {
     prompt: async prompt => {
         chat.waiting = true;
 
-        function post(text) {
+        function post(text, output) {
             const name = document.getElementById('chat').children.length % 2 ? 'ai' : 'me';
             const title = document.createElement('span');
 
@@ -15,7 +13,7 @@ const chat = {
 
             top.append(title);
 
-            if (name !== 'me') {
+            if (output) {
                 const span = text => {
                     const span = document.createElement('span');
                     span.innerHTML = text;
@@ -23,7 +21,11 @@ const chat = {
                     return span;
                 };
 
-                top.append(span(metadata.model_name), span(metadata.token_usage.total_tokens + ' tokens'));
+                top.append(
+                    span(output.model), 
+                    span('temperature ' + output.temperature),
+                    span(output.tokens + ' tokens')
+                );
             }
 
             const bottom = document.createElement('div');
@@ -49,8 +51,7 @@ const chat = {
         })
         .then(response => response.json())
         .then(o => {
-            metadata = o.response_metadata;
-            post(marked.parse(o.content));
+            post(marked.parse(o.content), o);
             chat.waiting = false;
         });
     },
