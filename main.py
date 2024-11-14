@@ -17,7 +17,7 @@ def cmd(line):
     return subprocess.run(line, shell = True, capture_output = True, text = True).stdout
 
 tools = [cmd]
-llm = ChatOpenAI(model = 'gpt-4o-mini').bind_tools(tools)
+llm = ChatOpenAI(model = 'gpt-4o-mini', temperature = 0).bind_tools(tools)
 
 def chatbot(state: MessagesState):
     return {'messages': llm.invoke(state['messages'])}
