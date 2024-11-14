@@ -17,3 +17,5 @@ RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11
 RUN pip install -U langgraph langsmith langchain_openai
 
 RUN pip install fastapi uvicorn
+
+RUN pip install langchain-core langchain-community

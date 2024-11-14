@@ -2,6 +2,7 @@ from langchain_openai import ChatOpenAI
 from langgraph.graph import StateGraph, MessagesState
 from langgraph.prebuilt import ToolNode, tools_condition
 from langgraph.checkpoint.memory import MemorySaver
+from langchain.schema import SystemMessage, HumanMessage
 import subprocess, time
 
 builder = StateGraph(MessagesState)
@@ -16,7 +17,10 @@ tools = [cmd]
 llm = None
 
 def chatbot(state: MessagesState):
-    return {'messages': [llm.invoke(state['messages'])]}
+    instruction = SystemMessage("""
+        You are going to help me with my source code. My name is Greg.
+    """)
+    return {'messages': [instruction, llm.invoke(state['messages'])]}
 
 builder.add_node('chatbot', chatbot)
 builder.add_node('tools', ToolNode(tools = tools))

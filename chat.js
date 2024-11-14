@@ -28,6 +28,7 @@ chat = {
             post.append(top, bottom);
             post.classList.add('post');
             document.getElementById('chat').appendChild(post);
+            Prism.highlightAll();            
 
             post.scrollIntoView({ behavior: 'smooth' });
         }
