@@ -70,7 +70,31 @@ const chat = {
                 chat.prompt(prompt);
             }
         })
-    }
+    },
+
+    redo: () => {
+        const div = document.getElementById('chat');
+
+        if (div.children.length > 2) {
+            div.removeChild(div.lastChild);
+            div.removeChild(div.lastChild);
+
+            chat.prompt(div.lastChild.innerHTML);
+        }
+
+        fetch('/editor/messages', { method: 'DELETE' });
+    },
+
+    back: () => {
+        const div = document.getElementById('chat');
+
+        if (div.children.length > 2) {
+            div.removeChild(div.lastChild);
+            div.removeChild(div.lastChild);
+        } 
+
+        fetch('/editor/messages', { method: 'DELETE' });
+    }   
 };
 
 chat.clear();
