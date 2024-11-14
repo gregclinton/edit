@@ -20,7 +20,7 @@ def chatbot(state: MessagesState):
     instruction = SystemMessage("""
         You are going to help me with my source code. My name is Greg.
     """)
-    return {'messages': [instruction, llm.invoke(state['messages'])]}
+    return {'messages': [instruction] + llm.invoke(state['messages'])]}
 
 builder.add_node('chatbot', chatbot)
 builder.add_node('tools', ToolNode(tools = tools))
