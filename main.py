@@ -10,7 +10,8 @@ with open(os.path.expanduser('~/keys'), 'r') as file:
         k, v = line.split('=')
         os.environ[k] = v
 
-builder = StateGraph(MessagesState)
+model = 'gpt-4o-mini'
+temperature = 0
 
 def cmd(line):
     """
@@ -19,13 +20,11 @@ def cmd(line):
     print(line, flush = True)
     return subprocess.run(line, shell = True, capture_output = True, text = True).stdout
 
-model = 'gpt-4o-mini'
-temperature = 0
-
 def set_model(name):
     """
-        gpt-4o, gpt-4o-mini or claude-3-5-sonnet
+        gpt-4o, gpt-4o-mini or claude-3-5-sonnet-latest
     """
+    global model
     print(name, flush = True)
     model = name
 
@@ -33,10 +32,9 @@ def set_temperature(x):
     """
         floating point number from 0.0 to 1.0
     """
+    global temperature
     print(temperature, flush = True)
-    graph.update_state(thread, { 'temperature': x })
     temperature = x
-    return temperature
 
 tools = [cmd, set_model, set_temperature]
 
@@ -44,6 +42,7 @@ def chatbot(state: MessagesState):
     llm = ChatOpenAI(model = model, temperature = temperature).bind_tools(tools)
     return {'messages': llm.invoke(state['messages'])}
 
+builder = StateGraph(MessagesState)
 builder.add_node('chatbot', chatbot)
 builder.add_node('tools', ToolNode(tools = tools))
 builder.add_conditional_edges('chatbot', tools_condition)
