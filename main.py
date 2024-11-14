@@ -19,7 +19,7 @@ def cmd(line):
     return subprocess.run(line, shell = True, capture_output = True, text = True).stdout
 
 tools = [cmd]
-llm = None
+llm = ChatOpenAI(model = 'gpt-4o-mini').bind_tools(tools)
 
 def chatbot(state: MessagesState):
     return {'messages': llm.invoke(state['messages'])}
@@ -61,16 +61,3 @@ async def post_prompt(req: Request):
         answer = event['messages'][-1].content
 
     return { 'answer': answer }
-
-def main():
-    global llm
-    import sys, uvicorn
-
-#    os.environ['OPENAI_API_KEY'] = sys.argv[1]
-
-    llm = ChatOpenAI(model = 'gpt-4o-mini').bind_tools(tools)
-
-    uvicorn.run(app, host = '0.0.0.0', port = 8000)
-
-if __name__ == "__main__":
-    main()

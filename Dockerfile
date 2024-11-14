@@ -1,7 +1,6 @@
 # docker build -t edit .
-# export key='xxxx'
-# sudo docker run -p 8000:8000 -v `pwd`:/root -w /root edit:latest python3 main.py $key
-# curl http://127.0.0.1:8000/editor
+# cd to your root folder
+# sudo docker run -p 8000:8000 -v `pwd`:/root -w /root edit:latest uvicorn edit.main:app --host 0.0.0.0 --port 8000 --reload
 
 FROM ubuntu:24.04
 
