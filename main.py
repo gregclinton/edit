@@ -4,7 +4,6 @@ from langgraph.graph import StateGraph, MessagesState
 from langgraph.prebuilt import ToolNode, tools_condition
 from langgraph.checkpoint.memory import MemorySaver
 from langchain.schema import HumanMessage, SystemMessage
-from langchain_core.tools import tool
 import subprocess, os
 
 with open('keys', 'r') as file:
@@ -15,7 +14,6 @@ with open('keys', 'r') as file:
 model = 'gpt-4o-mini'
 temperature = 0
 
-@tool
 def cmd(line):
     """
         run a shell command
@@ -23,7 +21,6 @@ def cmd(line):
     print(line, flush = True)
     return subprocess.run(line, shell = True, capture_output = True, text = True).stdout
 
-@tool
 def set_model(name):
     """
         gpt-4o, gpt-4o-mini or claude-3-5-haiku-20241022
@@ -32,7 +29,6 @@ def set_model(name):
     print(name, flush = True)
     model = name
 
-@tool
 def set_temperature(x):
     """
         floating point number from 0.0 to 1.0
@@ -97,21 +93,14 @@ async def delete_last_prompt():
 @app.post('/prompts')
 async def post_prompt(req: Request):
     prompt = (await req.json())['prompt']
-    graph.invoke({'messages': [('user', prompt)]}, thread)
 
-    from time import sleep
+    for event in graph.stream({"messages": [('user', prompt)]}, thread, stream_mode = 'values'):
+        msg = event['messages'][-1]
 
-    while True:
-        for event in graph.stream(None, thread, stream_mode = 'values'):
-            res = event['messages'][-1]
-        if res.content:
-            break
-        sleep(0.1)
-
-    usage = res.response_metadata['token_usage']
+    usage = msg.response_metadata['token_usage']
 
     return {
-        'content': res.content,
+        'content': msg.content,
         'model': model,
         'temperature': temperature,
         'tokens': {
