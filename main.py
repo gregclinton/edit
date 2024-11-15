@@ -4,6 +4,7 @@ from langgraph.graph import StateGraph, MessagesState
 from langgraph.prebuilt import ToolNode, tools_condition
 from langgraph.checkpoint.memory import MemorySaver
 from langchain.schema import HumanMessage, SystemMessage
+from langchain_core.tools import tool
 import subprocess, os
 
 with open('keys', 'r') as file:
@@ -14,6 +15,7 @@ with open('keys', 'r') as file:
 model = 'gpt-4o-mini'
 temperature = 0
 
+@tool
 def cmd(line):
     """
         run a shell command
@@ -21,6 +23,7 @@ def cmd(line):
     print(line, flush = True)
     return subprocess.run(line, shell = True, capture_output = True, text = True).stdout
 
+@tool
 def set_model(name):
     """
         gpt-4o, gpt-4o-mini or claude-3-5-haiku-20241022
@@ -29,6 +32,7 @@ def set_model(name):
     print(name, flush = True)
     model = name
 
+@tool
 def set_temperature(x):
     """
         floating point number from 0.0 to 1.0
@@ -40,7 +44,7 @@ def set_temperature(x):
 tools = [cmd, set_model, set_temperature]
 
 def chatbot(state: MessagesState):
-    instruction = """
+    instructions = """
         For rendering mathematical expressions, use LaTex with backslash square brackets, \\[ ... \\] for display-style and \\( ... \\) for inline -- no dollar signs.
         Do not escape the backslashes.
     """
@@ -48,7 +52,7 @@ def chatbot(state: MessagesState):
         llm = ChatAnthropic(model = model, temperature = temperature)
     else:
         llm = ChatOpenAI(model = model, temperature = temperature).bind_tools(tools)
-    return {'messages': llm.invoke([SystemMessage(content = instruction)] + state['messages'])}
+    return {'messages': llm.invoke([SystemMessage(content = instructions)] + state['messages'])}
 
 builder = StateGraph(MessagesState)
 builder.add_node('chatbot', chatbot)
