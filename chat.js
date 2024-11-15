@@ -78,12 +78,12 @@ const chat = {
 
         if (div.children.length > 2) {
             div.removeChild(div.lastChild);
+
+            const prompt = div.lastChild.lastChild.innerHTML;
             div.removeChild(div.lastChild);
-
-            chat.prompt(div.lastChild.innerHTML);
+            chat.back();
+            chat.prompt(prompt);    
         }
-
-        fetch('/editor/messages', { method: 'DELETE' });
     },
 
     back: () => {
@@ -94,7 +94,7 @@ const chat = {
             div.removeChild(div.lastChild);
         }
 
-        fetch('/editor/messages/last', { method: 'DELETE' });
+        fetch('/editor/prompts/last', { method: 'DELETE' });
     }
 };
 

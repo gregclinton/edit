@@ -77,8 +77,8 @@ async def delete_thread():
         'recursion_limit': 10
     }
 
-@app.delete('/messages/last')
-async def delete_last_message():
+@app.delete('/prompts/last')
+async def delete_last_prompt():
     msgs = graph.get_state(thread).values['messages']
 
     while not isinstance(msgs[-1], HumanMessage):
