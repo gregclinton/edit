@@ -1,4 +1,5 @@
 from langchain_openai import ChatOpenAI
+from langchain_anthropic import ChatAnthropic
 from langgraph.graph import StateGraph, MessagesState
 from langgraph.prebuilt import ToolNode, tools_condition
 from langgraph.checkpoint.memory import MemorySaver
@@ -43,7 +44,10 @@ def chatbot(state: MessagesState):
         For rendering mathematical expressions, use LaTex with backslash square brackets, \\[ ... \\] for display-style and \\( ... \\) for inline -- no dollar signs.
         Do not escape the backslashes.
     """
-    llm = ChatOpenAI(model = model, temperature = temperature).bind_tools(tools)
+    if model.startswith('claude'):
+        llm = ChatAnthropic(model = model, temperature = temperature)
+    else:
+        llm = ChatOpenAI(model = model, temperature = temperature).bind_tools(tools)
     return {'messages': llm.invoke([SystemMessage(content = instruction)] + state['messages'])}
 
 builder = StateGraph(MessagesState)

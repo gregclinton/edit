@@ -13,7 +13,7 @@ RUN apt update && apt upgrade -y && \
 
 RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11 
 
-RUN pip install -U langgraph langsmith langchain_openai
+RUN pip install -U langgraph langsmith langchain_openai langchain_anthropic
 
 RUN pip install fastapi uvicorn
 
