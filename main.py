@@ -5,7 +5,7 @@ from langgraph.checkpoint.memory import MemorySaver
 from langchain.schema import HumanMessage, SystemMessage
 import subprocess, os
 
-with open(os.path.expanduser('~/keys'), 'r') as file:
+with open('keys', 'r') as file:
     for line in file.read().splitlines():
         k, v = line.split('=')
         os.environ[k] = v
