@@ -91,14 +91,16 @@ async def post_prompt(req: Request):
     global thread
     prompt = (await req.json())['prompt']
 
-    for e in graph.stream({'messages': [('user', prompt)]}, thread, stream_mode = 'values'):
-        pass
+    graph.invoke({'messages': [('user', prompt)]}, thread)
+
+    from time import sleep
 
     while True:
         for event in graph.stream(None, thread, stream_mode = 'values'):
             res = event['messages'][-1]
         if res.content:
             break
+        sleep(0.1)
 
     usage = res.response_metadata['token_usage']
 
