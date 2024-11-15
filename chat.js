@@ -45,7 +45,7 @@ const chat = {
 
         post(prompt);
 
-        await fetch('/editor/messages', {
+        await fetch('/editor/prompts', {
             method: 'POST',
             headers:  { 'Content-Type': 'application/json' },
             body: JSON.stringify({

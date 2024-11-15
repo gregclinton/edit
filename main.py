@@ -86,7 +86,7 @@ async def delete_last_prompt():
 
     msgs.pop()
 
-@app.post('/messages')
+@app.post('/prompts')
 async def post_prompt(req: Request):
     prompt = (await req.json())['prompt']
     graph.invoke({'messages': [('user', prompt)]}, thread)
