@@ -76,25 +76,22 @@ const chat = {
     redo: () => {
         const div = document.getElementById('chat');
 
-        if (div.children.length > 2) {
-            div.removeChild(div.lastChild);
+        if (div.children.length > 1) {
+            const prompt = div.lastChild.previousSibling.lastChild.innerHTML;
 
-            const prompt = div.lastChild.lastChild.innerHTML;
-            div.removeChild(div.lastChild);
             chat.back();
-            chat.prompt(prompt);    
+            chat.prompt(prompt);
         }
     },
 
     back: () => {
         const div = document.getElementById('chat');
 
-        if (div.children.length > 2) {
+        if (div.children.length > 1) {
             div.removeChild(div.lastChild);
             div.removeChild(div.lastChild);
+            fetch('/editor/prompts/last', { method: 'DELETE' });
         }
-
-        fetch('/editor/prompts/last', { method: 'DELETE' });
     }
 };
 
