@@ -3,7 +3,7 @@ from langchain_anthropic import ChatAnthropic
 from langgraph.graph import StateGraph, MessagesState
 from langgraph.prebuilt import ToolNode, tools_condition
 from langgraph.checkpoint.memory import MemorySaver
-from langchain.schema import SystemMessage
+from langchain.schema import HumanMessage, SystemMessage
 import subprocess, os
 
 with open('keys', 'r') as file:
