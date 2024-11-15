@@ -89,7 +89,6 @@ async def delete_last_message():
 @app.post('/messages')
 async def post_prompt(req: Request):
     prompt = (await req.json())['prompt']
-
     graph.invoke({'messages': [('user', prompt)]}, thread)
 
     from time import sleep
