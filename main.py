@@ -90,13 +90,12 @@ async def delete_last_message():
 async def post_prompt(req: Request):
     global thread
     prompt = (await req.json())['prompt']
-    get_stream = lambda messages: graph.stream(messages, thread, stream_mode = 'values')
 
-    for e in get_stream({'messages': [('user', prompt)]}):
+    for e in graph.stream({'messages': [('user', prompt)]}, thread, stream_mode = 'values'):
         pass
 
     while True:
-        for event in get_stream(None):
+        for event in graph.stream(None, thread, stream_mode = 'values'):
             res = event['messages'][-1]
         if res.content:
             break
