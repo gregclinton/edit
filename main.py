@@ -95,8 +95,9 @@ async def post_prompt(req: Request):
     prompt = (await req.json())['prompt']
 
     for event in graph.stream({"messages": [('user', prompt)]}, thread, stream_mode = 'values'):
-        msg = event['messages'][-1]
+        pass
 
+    msg = event['messages'][-1]
     usage = msg.response_metadata['token_usage']
 
     return {
